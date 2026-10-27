@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="origin">
+<title>Mapa de atención a víctimas de violencia — Villavicencio (Meta)</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <div class="escudo" aria-hidden="true"><i class="fa-solid fa-building-columns"></i></div>
+  <div>
+    <h1>Mapa de atención a víctimas de violencia — Villavicencio (Meta)</h1>
+    <p class="sub">Ruta institucional diferenciada por comunas</p>
+  </div>
+  <div class="sellos" aria-hidden="true">
+    <span class="sello">Alcaldía de Villavicencio</span>
+    <span class="sello">Secretaría de Salud</span>
+  </div>
+  <button type="button" id="btn-admin" class="btn-admin"><i class="fa-solid fa-lock"></i> Admin</button>
+</header>
+
+<div class="layout">
+  <aside id="panel">
+    <button class="btn-movil" id="btn-panel" aria-expanded="true" aria-controls="panel-contenido">Filtros y líneas 24h</button>
+    <div id="panel-contenido" style="display:flex;flex-direction:column;gap:14px;">
+
+      <div class="stats" aria-label="Resumen del mapa">
+        <div class="stat"><div class="num" id="stat-total">0</div><div class="lbl">Instituciones</div></div>
+        <div class="stat"><div class="num" id="stat-24h">0</div><div class="lbl">Atención 24h</div></div>
+        <div class="stat"><div class="num">10</div><div class="lbl">Comunas</div></div>
+      </div>
+
+      <section class="bloque" aria-labelledby="t-filtros">
+        <h2 id="t-filtros">Filtros</h2>
+        <div class="subtitulo-chip">Tipo de violencia</div>
+        <div class="filtros-tipo" id="filtros-tipos" role="group" aria-label="Filtrar por tipo de violencia"></div>
+        <div class="chips" style="margin-top:12px;">
+          <button type="button" class="chip toggle24" id="chip-24h" aria-pressed="false">Atención 24 horas</button>
+          <button type="button" class="chip" id="chip-limpiar">Limpiar filtros</button>
+        </div>
+      </section>
+
+      <section class="bloque" aria-labelledby="t-lineas">
+        <h2 id="t-lineas">Líneas de atención</h2>
+        <div class="lineas-24h" id="lineas-24h"></div>
+      </section>
+
+      <section class="bloque" aria-labelledby="t-leyenda">
+        <h2 id="t-leyenda">Leyenda</h2>
+        <div class="leyenda-iconos">
+          <div><span class="lg-ico" style="--tc:#F97316"><img src="icons/comisaria.svg" alt=""></span> 🚔 Comisarías de Familia</div>
+          <div><span class="lg-ico" style="--tc:#2563EB"><img src="icons/salud.svg" alt=""></span> 🏥 Salud — IPS / Hospital</div>
+          <div><span class="lg-ico" style="--tc:#DC2626"><img src="icons/justicia.svg" alt=""></span> ⚖️ Justicia penal (Fiscalía, Policía)</div>
+          <div><span class="lg-ico" style="--tc:#9333EA"><img src="icons/diferencial.svg" alt=""></span> 🕊️ Enfoque diferencial (ICBF, CRAV, DAIV)</div>
+          <div><span class="lg-ico" style="--tc:#0D9488"><img src="icons/defensoria.svg" alt=""></span> 🛡️ Defensorías (Personería, Medicina Legal, Casa de Justicia)</div>
+          <div><span class="lg-ico h24" style="--tc:#F97316"><img src="icons/reloj.svg" alt=""></span> ⏰ Borde ámbar = 24 horas</div>
+          <div><span class="lg-ico alerta">!</span> ❓ Dirección por verificar</div>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <div id="map-wrap">
+    <div id="map" role="application" aria-label="Mapa interactivo de instituciones de atención a violencias en Villavicencio"></div>
+    <div id="aviso-captura" hidden>
+      <i class="fa-solid fa-location-crosshairs"></i> Modo captura: haga clic en el mapa para fijar la ubicación del punto
+      <button type="button" id="btn-cancelar-captura">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Fuente: Alcaldía de Villavicencio — Secretaría de salud & realizado por Jdsanchez info: 3005988746. Actualizado octubre de 2026.
+</footer>
+
+<!-- Modal de inicio de sesión -->
+<div id="modal-login" class="modal-overlay" hidden>
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="t-login">
+    <h2 id="t-login" class="modal-titulo"><i class="fa-solid fa-user-shield"></i> Acceso administrador</h2>
+    <p id="login-demo-aviso" class="aviso-demo" hidden>
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      Backend no configurado. Pegue la URL del Apps Script en <code>renderer/js/config.js → API_URL</code>
+      (ver README.md, paso de despliegue).
+    </p>
+    <form id="form-login" novalidate>
+      <label class="campo">
+        <span>Usuario</span>
+        <input type="text" id="login-usuario" autocomplete="username" required>
+      </label>
+      <label class="campo">
+        <span>Contraseña</span>
+        <input type="password" id="login-clave" autocomplete="current-password" required>
+      </label>
+      <p id="login-error" class="form-error" hidden></p>
+      <div class="modal-acciones">
+        <button type="button" class="btn-secundario" data-cerrar-login>Cancelar</button>
+        <button type="submit" class="btn-primario" id="btn-login-submit">Ingresar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Panel de administración -->
+<div id="panel-admin" class="panel-admin" hidden>
+  <div class="panel-admin-cabecera">
+    <h2><i class="fa-solid fa-screwdriver-wrench"></i> Administración de puntos</h2>
+    <div class="panel-admin-usuario">
+      <span id="admin-usuario-actual"></span>
+      <button type="button" id="btn-cambiar-clave" title="Cambiar contraseña"><i class="fa-solid fa-key"></i></button>
+      <button type="button" id="btn-cerrar-sesion" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket"></i></button>
+      <button type="button" id="btn-cerrar-panel" title="Ocultar panel"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </div>
+
+  <div class="panel-admin-acciones">
+    <button type="button" id="btn-nuevo-punto" class="btn-primario"><i class="fa-solid fa-plus"></i> Añadir punto</button>
+    <button type="button" id="btn-recargar" class="btn-secundario"><i class="fa-solid fa-rotate"></i> Recargar datos</button>
+  </div>
+
+  <form id="form-clave" class="form-punto" hidden novalidate>
+    <h3>Cambiar contraseña</h3>
+    <label class="campo">
+      <span>Nueva contraseña (mínimo 6 caracteres)</span>
+      <input type="password" id="f-clave-nueva" autocomplete="new-password">
+    </label>
+    <label class="campo">
+      <span>Confirmar nueva contraseña</span>
+      <input type="password" id="f-clave-confirmar" autocomplete="new-password">
+    </label>
+    <p id="clave-error" class="form-error" hidden></p>
+    <div class="modal-acciones">
+      <button type="button" class="btn-secundario" id="btn-cancelar-clave">Cancelar</button>
+      <button type="submit" class="btn-primario">Guardar contraseña</button>
+    </div>
+  </form>
+
+  <form id="form-punto" class="form-punto" hidden novalidate>
+    <h3 id="titulo-form-punto">Nuevo punto</h3>
+    <input type="hidden" id="f-id">
+
+    <label class="campo">
+      <span>Nombre de la institución *</span>
+      <input type="text" id="f-nombre" required>
+    </label>
+
+    <div class="campo">
+      <span>Categoría / ícono del marcador *</span>
+      <div class="selector-forma" id="selector-forma"></div>
+    </div>
+
+    <label class="campo">
+      <span>Logo institucional (PNG/JPG, máx. 30 KB — opcional)</span>
+      <input type="file" id="f-logo" accept="image/png,image/jpeg,image/webp">
+      <div class="logo-preview-wrap" id="logo-preview-wrap" hidden>
+        <img id="logo-preview" alt="Vista previa del logo">
+        <button type="button" id="btn-quitar-logo" class="btn-mini">Quitar logo</button>
+      </div>
+    </label>
+
+    <div class="campo">
+      <span>Comunas que cubre *</span>
+      <div class="chips chips-seleccion" id="f-comunas"></div>
+    </div>
+
+    <div class="campo">
+      <span>Tipos de violencia que atiende *</span>
+      <div class="checks" id="f-tipos"></div>
+    </div>
+
+    <label class="campo">
+      <span>Detalle de lo que atiende</span>
+      <textarea id="f-tipos-detalle" rows="2"></textarea>
+    </label>
+
+    <label class="campo">
+      <span>Dirección</span>
+      <input type="text" id="f-direccion">
+    </label>
+
+    <label class="campo">
+      <span>Teléfono / correo</span>
+      <input type="text" id="f-telefono">
+    </label>
+
+    <label class="campo">
+      <span>Horario de atención</span>
+      <input type="text" id="f-horario" placeholder="Ej.: Lunes a viernes 8:00 a.m. – 5:00 p.m.">
+    </label>
+
+    <div class="fila-2">
+      <label class="campo">
+        <span>Latitud *</span>
+        <input type="number" id="f-lat" step="any" required>
+      </label>
+      <label class="campo">
+        <span>Longitud *</span>
+        <input type="number" id="f-lng" step="any" required>
+      </label>
+    </div>
+    <p class="campo-ayuda">Active "Añadir punto" y haga clic en el mapa, o escriba las coordenadas.</p>
+
+    <div class="fila-2">
+      <label class="campo">
+        <span>Nivel</span>
+        <select id="f-nivel">
+          <option>Municipal</option>
+          <option>Departamental</option>
+          <option>Nacional</option>
+          <option>Municipal/Nacional</option>
+        </select>
+      </label>
+      <label class="campo">
+        <span>Estado de verificación</span>
+        <select id="f-verificado">
+          <option>verificado</option>
+          <option>parcialmente verificado</option>
+          <option>por verificar</option>
+          <option>en implementación</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="fila-2">
+      <label class="campo">
+        <span>Sede en comuna</span>
+        <input type="text" id="f-comuna-sede" placeholder="Ej.: centro, 7, La Grama…">
+      </label>
+      <label class="campo">
+        <span>Zona rural que cubre</span>
+        <input type="text" id="f-rural" placeholder="Ej.: Corregimiento 2 (14 veredas)">
+      </label>
+    </div>
+
+    <div class="campo-check">
+      <input type="checkbox" id="f-es24h">
+      <label for="f-es24h">Atención 24 horas</label>
+      <input type="checkbox" id="f-ubicacion-aprox">
+      <label for="f-ubicacion-aprox">Ubicación aproximada</label>
+    </div>
+
+    <p id="form-error" class="form-error" hidden></p>
+    <p id="form-info" class="form-info" hidden></p>
+
+    <div class="modal-acciones">
+      <button type="button" class="btn-secundario" id="btn-cancelar-form">Cancelar</button>
+      <button type="submit" class="btn-primario" id="btn-guardar-punto">Guardar punto</button>
+    </div>
+  </form>
+
+  <div class="admin-lista-bloque">
+    <h3>Puntos del mapa (<span id="admin-contador">0</span>)</h3>
+    <div class="buscador-admin">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="admin-buscar" placeholder="Buscar por nombre, dirección o tipo…" autocomplete="off" aria-label="Buscar puntos">
+      <button type="button" id="btn-limpiar-busqueda" title="Limpiar búsqueda" hidden><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p id="admin-busqueda-info" class="campo-ayuda" hidden></p>
+    <ul id="admin-lista" class="admin-lista"></ul>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="datos.js"></script>
+<script src="comunas.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  AppMapa.iniciar().then(function () {
+    AppAdmin.iniciar();
+    return AppAdmin.cargarDatos();
+  });
+});
+</script>
+</body>
+</html>
