@@ -1,0 +1,16 @@
+# Dependencias (se regeneran con `npm install`)
+node_modules/
+
+# Empaquetados de electron-builder (`npm run dist`)
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

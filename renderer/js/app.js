@@ -373,6 +373,14 @@ const AppMapa = (function () {
         panel.classList.add("colapsado");
         btnPanel.setAttribute("aria-expanded", "false");
       }
+
+      var btnDescargar = document.getElementById("btn-descargar-xlsx");
+      if (btnDescargar) {
+        btnDescargar.addEventListener("click", function () {
+          ExportXLSX.descargarInstituciones(AppMapa.getDatos());
+        });
+      }
+
       setTimeout(function () { mapa.invalidateSize(); }, 200);
       resolver();
     });

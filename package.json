@@ -1,0 +1,51 @@
+{
+  "name": "mapeo-villavicencio",
+  "version": "2.0.0",
+  "description": "Mapa de atención a víctimas de violencia — Villavicencio (Meta). App de escritorio con panel de administración y backend en Google Apps Script.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:portable": "electron-builder --win portable"
+  },
+  "author": "Alcaldía de Villavicencio — Secretaría de Salud",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "co.villavicencio.mapeo",
+    "productName": "Mapeo Víctimas Villavicencio",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "renderer/**/*"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Mapeo Víctimas Villavicencio",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    },
+    "fileAssociations": [],
+    "compression": "normal",
+    "removePackageScripts": true
+  }
+}

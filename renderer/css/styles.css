@@ -152,6 +152,27 @@ h2 {
 .stat .num { font-size: 1.25rem; font-weight: 800; color: var(--verde); line-height: 1.1; }
 .stat .lbl { font-size: 0.68rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.04em; }
 
+.bloque-descarga { padding: 10px; }
+.btn-descarga {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--verde);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-descarga:hover { background: var(--verde-escuro); }
+.btn-descarga i { font-size: 0.9rem; }
+.bloque-descarga .campo-ayuda { margin: 7px 0 0; text-align: center; }
+
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chip {
   border: 1px solid var(--borde);
