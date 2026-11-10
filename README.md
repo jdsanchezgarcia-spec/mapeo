@@ -125,8 +125,12 @@ node tools/importar-mapeo.js [ruta.tsv] [--dry]   # --dry: no escribe nada
 
 Cómo mapea cada fila:
 
-- **Destino**: solo `renderer/datos.js` (modo demo). **No toca el Google Sheet
-  ni el backend**: el mapa en vivo sigue leyendo del Sheet.
+- **Destino**: solo `renderer/datos.js`. **No toca el Google Sheet ni el
+  backend**. La página en vivo (`renderer/js/api.js → fusionarConSheet`) carga
+  las filas del Sheet y les agrega las instituciones de `datos.js` que falten
+  (comparando por nombre, con `id + 10000`), así el mapa público muestra el
+  mapeo completo sin editar el Sheet. En modo demo (API_URL vacío) se leen las
+  locales tal cual.
 - **Omite** las instituciones que ya existen (se comparan los nombres), así que
   se puede ejecutar varias veces sin duplicar nada.
 - **Coordenadas**: geocodifica la dirección con Nominatim/OpenStreetMap y

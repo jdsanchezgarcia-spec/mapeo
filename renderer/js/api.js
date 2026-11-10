@@ -15,6 +15,34 @@ const API = (function () {
     });
   }
 
+  // En vivo: parte de las filas del Google Sheet y agrega las instituciones de
+  // datos.js que aún no estén en el Sheet (comparando por nombre), para que la
+  // web pública muestre el mapeo completo. Los id de las filas locales se
+  // renumeran con un desplazamiento de 10000 para no chocar con los id que
+  // asigna el backend al crear puntos nuevos.
+  function fusionarConSheet(filas) {
+    if (typeof INSTITUCIONES === "undefined" || !INSTITUCIONES.length) return filas;
+    var nombres = {};
+    filas.forEach(function (f) {
+      nombres[normalizarNombre_(f.nombre)] = true;
+    });
+    var extras = [];
+    INSTITUCIONES.forEach(function (local) {
+      var clave = normalizarNombre_(local.nombre);
+      if (nombres[clave]) return;   // ya está en el Sheet
+      nombres[clave] = true;
+      var copia = Object.assign({}, local);
+      copia.id = 10000 + Number(local.id);
+      copia.logo = LOGOS[local.id] || "";
+      extras.push(copia);
+    });
+    return filas.concat(extras);
+  }
+
+  function normalizarNombre_(n) {
+    return String(n === null || n === undefined ? "" : n).trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
   function cargarInstituciones() {
     if (modoDemo()) {
       return Promise.resolve(datosDemo());
@@ -23,7 +51,7 @@ const API = (function () {
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (!data.ok) throw new Error(data.error || "No se pudieron cargar las instituciones.");
-        return data.instituciones;
+        return fusionarConSheet(data.instituciones);
       });
   }
 
