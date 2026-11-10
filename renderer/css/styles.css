@@ -219,11 +219,13 @@ h2 {
 .f-tipo .ft-ico {
   width: 24px; height: 24px;
   border-radius: 50%;
-  background: var(--tc, #00843D);
-  color: #fff;
+  background: #fff;
+  border: 2px solid var(--tc, #00843D);
+  color: var(--tc, #00843D);
   display: flex; align-items: center; justify-content: center;
   font-size: 10px;
 }
+.f-tipo .ft-ico img { width: 15px; height: 15px; }
 .f-tipo .ft-label { font-size: 0.76rem; font-weight: 600; line-height: 1.2; }
 .f-tipo .ft-count {
   font-size: 0.66rem;

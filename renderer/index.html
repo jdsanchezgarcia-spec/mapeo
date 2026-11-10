@@ -43,8 +43,8 @@
 
       <section class="bloque" aria-labelledby="t-filtros">
         <h2 id="t-filtros">Filtros</h2>
-        <div class="subtitulo-chip">Tipo de violencia</div>
-        <div class="filtros-tipo" id="filtros-tipos" role="group" aria-label="Filtrar por tipo de violencia"></div>
+        <div class="subtitulo-chip">Categoría</div>
+        <div class="filtros-tipo" id="filtros-categorias" role="group" aria-label="Filtrar por categoría institucional"></div>
         <div class="chips" style="margin-top:12px;">
           <button type="button" class="chip toggle24" id="chip-24h" aria-pressed="false">Atención 24 horas</button>
           <button type="button" class="chip" id="chip-limpiar">Limpiar filtros</button>
@@ -58,15 +58,7 @@
 
       <section class="bloque" aria-labelledby="t-leyenda">
         <h2 id="t-leyenda">Leyenda</h2>
-        <div class="leyenda-iconos">
-          <div><span class="lg-ico" style="--tc:#F97316"><img src="icons/comisaria.svg" alt=""></span> 🚔 Comisarías de Familia</div>
-          <div><span class="lg-ico" style="--tc:#2563EB"><img src="icons/salud.svg" alt=""></span> 🏥 Salud — IPS / Hospital</div>
-          <div><span class="lg-ico" style="--tc:#DC2626"><img src="icons/justicia.svg" alt=""></span> ⚖️ Justicia penal (Fiscalía, Policía)</div>
-          <div><span class="lg-ico" style="--tc:#9333EA"><img src="icons/diferencial.svg" alt=""></span> 🕊️ Enfoque diferencial (ICBF, CRAV, DAIV)</div>
-          <div><span class="lg-ico" style="--tc:#0D9488"><img src="icons/defensoria.svg" alt=""></span> 🛡️ Defensorías (Personería, Medicina Legal, Casa de Justicia)</div>
-          <div><span class="lg-ico h24" style="--tc:#F97316"><img src="icons/reloj.svg" alt=""></span> ⏰ Borde ámbar = 24 horas</div>
-          <div><span class="lg-ico alerta">!</span> ❓ Dirección por verificar</div>
-        </div>
+        <div class="leyenda-iconos" id="leyenda-iconos"></div>
       </section>
     </div>
   </aside>

@@ -6,14 +6,34 @@ const ExportXLSX = (function () {
 
   var MIME_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-  // Nombre visible de cada categoría de marcador (mismo criterio de la leyenda).
+  // Etiqueta de cada categoría institucional (misma clave que usa el mapa).
   var CATEGORIAS = {
-    circulo: "Comisaría de Familia",
-    cuadrado: "Salud — IPS / Hospital",
-    triangulo: "Justicia penal (Fiscalía, Policía)",
-    estrella: "Enfoque diferencial (ICBF, CRAV, DAIV)",
-    rombo: "Defensorías (Personería, Medicina Legal, Casa de Justicia)"
+    proteccion: "Protección",
+    salud: "Salud",
+    justicia: "Justicia",
+    cai: "CAI y Policía",
+    ong: "ONG / Fundaciones",
+    defensoria: "Defensorías",
+    diferencial: "Enfoque diferencial"
   };
+
+  // Categoría de la entidad en texto (toma las etiquetas del mapa si está disponible).
+  function categoriaTexto(ins) {
+    if (typeof AppMapa !== "undefined" && AppMapa && typeof AppMapa.categoriaDe === "function") {
+      var k = AppMapa.categoriaDe(ins);
+      var cats = AppMapa.getCategorias ? AppMapa.getCategorias() : null;
+      if (cats && cats[k]) return cats[k].etiqueta;
+      if (CATEGORIAS[k]) return CATEGORIAS[k];
+    }
+    var porForma = {
+      circulo: CATEGORIAS.proteccion,
+      cuadrado: CATEGORIAS.salud,
+      triangulo: CATEGORIAS.justicia,
+      estrella: CATEGORIAS.diferencial,
+      rombo: CATEGORIAS.defensoria
+    };
+    return porForma[ins.forma] || "";
+  }
 
   // Columnas del archivo: título (t) y ancho en caracteres (w).
   var COLUMNAS = [
@@ -83,7 +103,7 @@ const ExportXLSX = (function () {
     return [
       typeof ins.id === "number" ? ins.id : (ins.id ? String(ins.id) : ""),
       String(ins.nombre || ""),
-      CATEGORIAS[ins.forma] || "",
+      categoriaTexto(ins),
       (ins.tipos || []).join(", "),
       String(ins.tiposDetalle || ""),
       comunasTexto(ins),

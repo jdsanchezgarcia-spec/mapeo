@@ -1,6 +1,7 @@
 const INSTITUCIONES = [
   {
     id: 1,
+    categoria: "proteccion",
     nombre: "Comisaría de Familia Primera",
     tipos: ["Violencia intrafamiliar", "Maltrato infantil", "Violencia de género"],
     tiposDetalle: "Violencia intrafamiliar (VIF); maltrato infantil; violencia contra la mujer; restablecimiento de derechos de NNA y adultos mayores",
@@ -20,6 +21,7 @@ const INSTITUCIONES = [
   },
   {
     id: 2,
+    categoria: "proteccion",
     nombre: "Comisaría de Familia Segunda",
     tipos: ["Violencia intrafamiliar", "Maltrato infantil", "Violencia de género"],
     tiposDetalle: "Violencia intrafamiliar (VIF); maltrato infantil; violencia contra la mujer; restablecimiento de derechos",
@@ -39,6 +41,7 @@ const INSTITUCIONES = [
   },
   {
     id: 3,
+    categoria: "proteccion",
     nombre: "Comisaría de Familia Tercera",
     tipos: ["Violencia intrafamiliar", "Maltrato infantil", "Violencia de género"],
     tiposDetalle: "Violencia intrafamiliar (VIF); maltrato infantil; violencia contra la mujer; restablecimiento de derechos",
@@ -58,6 +61,7 @@ const INSTITUCIONES = [
   },
   {
     id: 4,
+    categoria: "proteccion",
     nombre: "Comisaría de Familia Cuarta (única 24 horas)",
     tipos: ["Violencia intrafamiliar", "Maltrato infantil", "Violencia de género", "Violencia sexual"],
     tiposDetalle: "Violencia intrafamiliar (VIF); maltrato infantil; violencia contra la mujer; violencia sexual (componente de protección); atención urbana y rural permanente",
@@ -77,6 +81,7 @@ const INSTITUCIONES = [
   },
   {
     id: 5,
+    categoria: "proteccion",
     nombre: "Comisaría de Familia Quinta (nueva)",
     tipos: ["Violencia intrafamiliar", "Maltrato infantil", "Violencia de género"],
     tiposDetalle: "Violencia intrafamiliar (VIF); maltrato infantil; violencia contra la mujer; restablecimiento de derechos",
@@ -97,6 +102,7 @@ const INSTITUCIONES = [
   },
   {
     id: 6,
+    categoria: "defensoria",
     nombre: "Casa de Justicia de Villavicencio",
     tipos: ["Orientación legal", "Violencia intrafamiliar", "Violencia de género"],
     tiposDetalle: "Orientación legal y acceso a la justicia en VIF y VBG; conciliación; justicia restaurativa; atención interinstitucional (Fiscalía, ICBF, Inspecciones, Comisaría de Familia)",
@@ -116,6 +122,7 @@ const INSTITUCIONES = [
   },
   {
     id: 7,
+    categoria: "diferencial",
     nombre: "ICBF Centro Zonal Villavicencio Dos (Especializado en Protección)",
     tipos: ["Maltrato infantil"],
     tiposDetalle: "Maltrato infantil y vulneración de derechos de niños, niñas y adolescentes",
@@ -135,6 +142,7 @@ const INSTITUCIONES = [
   },
   {
     id: 8,
+    categoria: "diferencial",
     nombre: "Dirección de Atención Integral a Víctimas — Alcaldía de Villavicencio",
     tipos: ["Víctimas del conflicto"],
     tiposDetalle: "Víctimas del conflicto armado: atención, asistencia y reparación integral (Ley 1448 de 2011); articulación de rutas",
@@ -154,6 +162,7 @@ const INSTITUCIONES = [
   },
   {
     id: 9,
+    categoria: "diferencial",
     nombre: "Centro Regional de Atención a Víctimas (CRAV) — Unidad para las Víctimas",
     tipos: ["Víctimas del conflicto"],
     tiposDetalle: "Víctimas del conflicto armado: orientación, registro en el RUV, ayudas humanitarias y reparación",
@@ -173,6 +182,7 @@ const INSTITUCIONES = [
   },
   {
     id: 10,
+    categoria: "salud",
     nombre: "Hospital Departamental de Villavicencio E.S.E.",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Violencia sexual (urgencia médica 24h, kit de evidencia, cadena de custodia, IVE, profilaxis); violencia física y VIF (atención en salud, parte de lesiones)",
@@ -192,6 +202,7 @@ const INSTITUCIONES = [
   },
   {
     id: 11,
+    categoria: "justicia",
     nombre: "Fiscalía General de la Nación — URI Villavicencio",
     tipos: ["Violencia sexual", "Violencia de género", "Violencia intrafamiliar", "Víctimas del conflicto"],
     tiposDetalle: "Violencia sexual; violencia de género e intrafamiliar (delitos); feminicidio; delitos contra víctimas del conflicto",
@@ -211,6 +222,7 @@ const INSTITUCIONES = [
   },
   {
     id: 12,
+    categoria: "cai",
     nombre: "Policía Nacional — Estaciones y CAI",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Denuncia inmediata de VIF, violencia sexual y delitos; protección y primeros auxilios jurídicos",
@@ -231,6 +243,7 @@ const INSTITUCIONES = [
   },
   {
     id: 13,
+    categoria: "defensoria",
     nombre: "Instituto de Medicina Legal y Ciencias Forenses — Seccional Meta",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Peritajes médico-legales en violencia sexual, VIF y lesiones personales (evidencia forense)",
@@ -250,6 +263,7 @@ const INSTITUCIONES = [
   },
   {
     id: 14,
+    categoria: "defensoria",
     nombre: "Personería Municipal de Villavicencio",
     tipos: ["Orientación legal"],
     tiposDetalle: "Defensa y promoción de derechos humanos; control a la administración; acompañamiento a víctimas de violencias",
@@ -269,6 +283,7 @@ const INSTITUCIONES = [
   },
   {
     id: 15,
+    categoria: "defensoria",
     nombre: "Defensoría del Pueblo — Delegada Meta",
     tipos: ["Orientación legal", "Víctimas del conflicto"],
     tiposDetalle: "Defensa de derechos humanos y de víctimas de violencias; orientación jurídica gratuita",
@@ -288,6 +303,7 @@ const INSTITUCIONES = [
   },
   {
     id: 16,
+    categoria: "cai",
     nombre: "CAIC Caudal",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -308,6 +324,7 @@ const INSTITUCIONES = [
   },
   {
     id: 17,
+    categoria: "ong",
     nombre: "Fundación Femenina de Servicio Social del Meta",
     tipos: ["Violencia de género"],
     tiposDetalle: "Desde 1986: programas sociales en salud, educación y trabajo",
@@ -328,6 +345,7 @@ const INSTITUCIONES = [
   },
   {
     id: 18,
+    categoria: "cai",
     nombre: "Departamento de Policía Meta",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Policía Nacional",
@@ -347,6 +365,7 @@ const INSTITUCIONES = [
   },
   {
     id: 19,
+    categoria: "ong",
     nombre: "Corporación Mujeres Transformando Vidas",
     tipos: ["Violencia de género"],
     tiposDetalle: "Desarrollo social, educativo; articulada con 'Mujeres que Transforman'",
@@ -367,6 +386,7 @@ const INSTITUCIONES = [
   },
   {
     id: 20,
+    categoria: "cai",
     nombre: "CAI Barzal",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -386,6 +406,7 @@ const INSTITUCIONES = [
   },
   {
     id: 21,
+    categoria: "cai",
     nombre: "CAI Buque",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -405,6 +426,7 @@ const INSTITUCIONES = [
   },
   {
     id: 22,
+    categoria: "cai",
     nombre: "Inspección de Policía Urbana No. 1",
     tipos: ["Orientación legal"],
     tiposDetalle: "Inspección de policía",
@@ -424,6 +446,7 @@ const INSTITUCIONES = [
   },
   {
     id: 23,
+    categoria: "cai",
     nombre: "Inspección de Policía Urbana No. 2 (24 horas)",
     tipos: ["Orientación legal"],
     tiposDetalle: "Turnos 24 horas",
@@ -443,6 +466,7 @@ const INSTITUCIONES = [
   },
   {
     id: 24,
+    categoria: "ong",
     nombre: "Fundación Mujeres Trabajando por el Meta",
     tipos: ["Maltrato infantil", "Violencia de género"],
     tiposDetalle: "Apoyo a niñez con necesidades especiales",
@@ -462,6 +486,7 @@ const INSTITUCIONES = [
   },
   {
     id: 25,
+    categoria: "cai",
     nombre: "CAI Maizaro",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -481,6 +506,7 @@ const INSTITUCIONES = [
   },
   {
     id: 26,
+    categoria: "salud",
     nombre: "Hospital de la Gente – Sede principal",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Atención médica especializada y urgencias de alta complejidad",
@@ -500,6 +526,7 @@ const INSTITUCIONES = [
   },
   {
     id: 27,
+    categoria: "salud",
     nombre: "Corporación Clínica Primavera",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Urgencias 24/7, UCI, hospitalización",
@@ -519,6 +546,7 @@ const INSTITUCIONES = [
   },
   {
     id: 28,
+    categoria: "salud",
     nombre: "Clínica del Meta",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Centro de urgencias y servicios médicos",
@@ -539,6 +567,7 @@ const INSTITUCIONES = [
   },
   {
     id: 29,
+    categoria: "salud",
     nombre: "Clínica Renovar",
     tipos: ["Violencia intrafamiliar", "Violencia de género"],
     tiposDetalle: "Especializada en salud mental: psiquiatría y urgencias",
@@ -559,6 +588,7 @@ const INSTITUCIONES = [
   },
   {
     id: 30,
+    categoria: "salud",
     nombre: "Centro Médico MultiSalud Plus",
     tipos: ["Violencia intrafamiliar", "Violencia de género"],
     tiposDetalle: "Primer nivel y servicios especializados (psiquiatría)",
@@ -579,6 +609,7 @@ const INSTITUCIONES = [
   },
   {
     id: 31,
+    categoria: "salud",
     nombre: "Servimédicos",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Urgencias, hospitalización, consulta externa",
@@ -598,6 +629,7 @@ const INSTITUCIONES = [
   },
   {
     id: 32,
+    categoria: "salud",
     nombre: "Centro Terapéutico Integral Sentidos IPS SAS",
     tipos: ["Violencia intrafamiliar", "Violencia de género"],
     tiposDetalle: "Cuidado integral: físico, emocional y mental",
@@ -617,6 +649,7 @@ const INSTITUCIONES = [
   },
   {
     id: 33,
+    categoria: "cai",
     nombre: "CAI Guatiquía",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -636,6 +669,7 @@ const INSTITUCIONES = [
   },
   {
     id: 34,
+    categoria: "cai",
     nombre: "Inspección de Policía Urbana No. 3",
     tipos: ["Orientación legal"],
     tiposDetalle: "Inspección de policía",
@@ -655,6 +689,7 @@ const INSTITUCIONES = [
   },
   {
     id: 35,
+    categoria: "salud",
     nombre: "Centro de Salud El Recreo",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Urgencias 24 horas y consulta",
@@ -674,6 +709,7 @@ const INSTITUCIONES = [
   },
   {
     id: 36,
+    categoria: "cai",
     nombre: "CAI Catama",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -693,6 +729,7 @@ const INSTITUCIONES = [
   },
   {
     id: 37,
+    categoria: "salud",
     nombre: "Centro de Salud Popular",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Atención de primer nivel",
@@ -712,6 +749,7 @@ const INSTITUCIONES = [
   },
   {
     id: 38,
+    categoria: "cai",
     nombre: "CAI Popular",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -731,6 +769,7 @@ const INSTITUCIONES = [
   },
   {
     id: 39,
+    categoria: "salud",
     nombre: "Clínica Fénix Salud Mental",
     tipos: ["Violencia intrafamiliar", "Violencia de género"],
     tiposDetalle: "Centro clínico especializado en salud mental y emergencias",
@@ -750,6 +789,7 @@ const INSTITUCIONES = [
   },
   {
     id: 40,
+    categoria: "ong",
     nombre: "Fundación de Mujeres Inspiradoras",
     tipos: ["Violencia de género"],
     tiposDetalle: "Liderazgo, igualdad de género y empoderamiento",
@@ -769,6 +809,7 @@ const INSTITUCIONES = [
   },
   {
     id: 41,
+    categoria: "cai",
     nombre: "CAI Esperanza",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -788,6 +829,7 @@ const INSTITUCIONES = [
   },
   {
     id: 42,
+    categoria: "salud",
     nombre: "Centro de Salud La Esperanza",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Atención de primer nivel",
@@ -807,6 +849,7 @@ const INSTITUCIONES = [
   },
   {
     id: 43,
+    categoria: "salud",
     nombre: "SAMEN IPS S.A.S. – Urgencias",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Atención permanente 24 horas",
@@ -826,6 +869,7 @@ const INSTITUCIONES = [
   },
   {
     id: 44,
+    categoria: "cai",
     nombre: "CAI Fundadores",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -845,6 +889,7 @@ const INSTITUCIONES = [
   },
   {
     id: 45,
+    categoria: "proteccion",
     nombre: "Centro Integrado para la Atención (Línea Violeta)",
     tipos: ["Violencia de género"],
     tiposDetalle: "Atención integral y activación de la ruta de violencia basada en género",
@@ -864,6 +909,7 @@ const INSTITUCIONES = [
   },
   {
     id: 46,
+    categoria: "cai",
     nombre: "CAI Porfiía",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -883,6 +929,7 @@ const INSTITUCIONES = [
   },
   {
     id: 47,
+    categoria: "salud",
     nombre: "Centro de Salud de Porfiía",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Atención de primer nivel",
@@ -902,6 +949,7 @@ const INSTITUCIONES = [
   },
   {
     id: 48,
+    categoria: "cai",
     nombre: "CAI de Policía Betty Camacho",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",
@@ -921,6 +969,7 @@ const INSTITUCIONES = [
   },
   {
     id: 49,
+    categoria: "salud",
     nombre: "Centro de Salud La Reliquia",
     tipos: ["Violencia sexual", "Violencia intrafamiliar"],
     tiposDetalle: "Atención de primer nivel",
@@ -940,6 +989,7 @@ const INSTITUCIONES = [
   },
   {
     id: 50,
+    categoria: "salud",
     nombre: "Clínica de Salud Mental Monte Sinaí",
     tipos: ["Violencia intrafamiliar", "Violencia de género"],
     tiposDetalle: "Servicios especializados en salud mental y adicciones",
@@ -959,6 +1009,7 @@ const INSTITUCIONES = [
   },
   {
     id: 51,
+    categoria: "cai",
     nombre: "CAI Vanguardia",
     tipos: ["Violencia intrafamiliar", "Violencia sexual", "Violencia de género"],
     tiposDetalle: "Seguridad y atención inmediata",

@@ -5,16 +5,8 @@ const AppAdmin = (function () {
   var modoCaptura = false;
   var marcadorCaptura = null;
   var logoDataUrl = "";        // logo pendiente de guardar (base64)
-  var formaSeleccionada = "circulo";
+  var formaSeleccionada = "proteccion";  // clave de categoría (ver AppMapa.getCategorias())
   var textoBusqueda = "";      // filtro del buscador del panel admin
-
-  var FORMAS = [
-    { forma: "circulo", etiqueta: "Comisaría" },
-    { forma: "cuadrado", etiqueta: "Salud" },
-    { forma: "triangulo", etiqueta: "Justicia" },
-    { forma: "estrella", etiqueta: "Diferencial" },
-    { forma: "rombo", etiqueta: "Defensoría" }
-  ];
 
   // ---------- utilidades ----------
 
@@ -233,18 +225,18 @@ const AppAdmin = (function () {
   function construirSelectorForma() {
     var cont = $("selector-forma");
     cont.innerHTML = "";
-    var iconos = AppMapa.getIconoPorForma();
-    var colores = AppMapa.getColorPorForma();
-    FORMAS.forEach(function (f) {
+    var cats = AppMapa.getCategorias();
+    AppMapa.getOrdenCategorias().forEach(function (clave) {
+      var cat = cats[clave];
       var b = document.createElement("button");
       b.type = "button";
       b.className = "opcion-forma";
-      b.dataset.forma = f.forma;
-      b.style.setProperty("--tc", colores[f.forma]);
-      b.setAttribute("aria-pressed", f.forma === formaSeleccionada ? "true" : "false");
-      b.innerHTML = '<img src="' + iconos[f.forma] + '" alt=""><span>' + f.etiqueta + "</span>";
+      b.dataset.forma = clave;
+      b.style.setProperty("--tc", cat.color);
+      b.setAttribute("aria-pressed", clave === formaSeleccionada ? "true" : "false");
+      b.innerHTML = '<img src="' + cat.icono + '" alt=""><span>' + cat.etiqueta + "</span>";
       b.addEventListener("click", function () {
-        formaSeleccionada = f.forma;
+        formaSeleccionada = clave;
         cont.querySelectorAll(".opcion-forma").forEach(function (x) {
           x.setAttribute("aria-pressed", x.dataset.forma === formaSeleccionada ? "true" : "false");
         });
@@ -323,8 +315,9 @@ const AppAdmin = (function () {
     });
   }
 
-  function seleccionarForma(forma) {
-    formaSeleccionada = FORMAS.some(function (f) { return f.forma === forma; }) ? forma : "circulo";
+  function seleccionarForma(clave) {
+    var cats = AppMapa.getCategorias();
+    formaSeleccionada = cats[clave] ? clave : "proteccion";
     document.querySelectorAll("#selector-forma .opcion-forma").forEach(function (x) {
       x.setAttribute("aria-pressed", x.dataset.forma === formaSeleccionada ? "true" : "false");
     });
@@ -367,7 +360,7 @@ const AppAdmin = (function () {
     $("form-punto").reset();
     $("f-id").value = "";
     quitarLogo();
-    seleccionarForma("circulo");
+    seleccionarForma("proteccion");
     marcarComunas(["todas"]);
     marcarTipos([]);
     $("titulo-form-punto").textContent = "Nuevo punto";
@@ -381,7 +374,7 @@ const AppAdmin = (function () {
     if (!ins) return;
     $("f-id").value = ins.id;
     $("f-nombre").value = ins.nombre || "";
-    seleccionarForma(ins.forma);
+    seleccionarForma(ins.categoria || AppMapa.categoriaDe(ins));
     logoDataUrl = ins.logo || "";
     if (logoDataUrl) {
       $("logo-preview").src = logoDataUrl;
@@ -424,7 +417,8 @@ const AppAdmin = (function () {
     return {
       id: $("f-id").value ? Number($("f-id").value) : null,
       nombre: nombre,
-      forma: formaSeleccionada,
+      categoria: formaSeleccionada,
+      forma: (AppMapa.getCategorias()[formaSeleccionada] || {}).forma || "circulo",
       logo: logoDataUrl,
       comunas: comunas,
       comunaSede: $("f-comuna-sede").value.trim() || "por verificar",
@@ -643,7 +637,7 @@ const AppAdmin = (function () {
       else if (q) li.className = "al-coincide";
       var nombre = document.createElement("span");
       nombre.className = "al-nombre";
-      var emoji = (AppMapa.getEmojiPorForma()[ins.forma] || "");
+      var emoji = (AppMapa.getCategorias()[AppMapa.categoriaDe(ins)] || {}).emoji || "";
       nombre.innerHTML = '<span class="emoji-cat">' + emoji + "</span> " + ins.nombre + "<small>" + AppMapa.textoComunas(ins) + " · " + (ins.tipos || []).join(", ") + "</small>";
       var btnEditar = document.createElement("button");
       btnEditar.className = "al-editar";

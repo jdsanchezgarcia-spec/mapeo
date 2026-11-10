@@ -83,7 +83,8 @@ agregarUsuario("operador1", "claveSegura123", "admin");
 1. Pulse **Admin** (esquina superior derecha) e inicie sesión.
 2. **Añadir punto** → el cursor cambia a modo captura: **haga clic en el mapa** para fijar
    latitud/longitud (también puede escribirlas a mano).
-3. Complete: nombre, categoría del ícono (comisaría, salud, justicia, diferencial, defensoría),
+3. Complete: nombre, categoría institucional (Protección, Salud, Justicia, CAI y
+   Policía, ONG / Fundaciones, Defensorías, Enfoque diferencial),
    logo opcional (PNG/JPG máx. 30 KB), comunas que cubre, **tipos de violencia que atiende**,
    dirección, teléfono, horario, nivel, atención 24 h.
 4. **Guardar punto** → el punto aparece en el mapa, el listado y los filtros.
@@ -133,8 +134,13 @@ Cómo mapea cada fila:
   distinta de la que declara la fila. Si no hay dirección o no hay resultado
   válido, usa el centroide de la comuna (con una separación mínima para que no
   se apilen) o el centro de la ciudad cuando la cobertura es «todas».
-- **Categoría (`forma`)**: Comisaría → círculo; Policía/CAI/Inspección →
-  triángulo; Salud → cuadrado; Organización Social/Centro Integrado → estrella.
+- **Categoría institucional (`categoria`)**: Protección (comisarías y Línea
+  Violeta), Salud, Justicia (Fiscalía), CAI y Policía (CAI, Inspecciones,
+  Departamento de Policía), ONG / Fundaciones, Defensorías (Casa de Justicia,
+  Medicina Legal, Personería, Defensoría del Pueblo) y Enfoque diferencial
+  (ICBF, CRAV, DAIV). Es la columna **Categoría** del XLSX y alimenta los
+  filtros, la leyenda y los colores del mapa. El campo legado `forma` sigue
+  guardándose para los datos antiguos y del Sheet en vivo.
 - **Tipos de violencia**: por palabras clave en Institución + Servicios, con
   respaldo según la columna Tipo.
 - **24 horas**: detecta «24 horas», «24/7» o «24 h» en el nombre, servicios o teléfono.

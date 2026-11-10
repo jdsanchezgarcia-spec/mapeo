@@ -7,52 +7,51 @@ const AppMapa = (function () {
   var marcadores = {};
   var DATOS = [];
 
-  var tipoSel = new Set();
+  var catSel = new Set();
   var solo24 = false;
 
   var modoEdicion = false;   // true cuando hay sesión admin: marcadores arrastrables
   var alMover = null;        // callback(id, latlng) al soltar un marcador arrastrado
 
-  var COLOR_TIPO = {
-    circulo: "#F97316",
-    cuadrado: "#2563EB",
-    triangulo: "#DC2626",
-    estrella: "#9333EA",
-    rombo: "#0D9488"
+  // Categorías institucionales: definen los filtros del panel, la leyenda,
+  // el color del marcador, su ícono y el emoji del popup.
+  var CATEGORIAS = {
+    proteccion:  { etiqueta: "Protección",           color: "#F97316", icono: "icons/comisaria.svg",   emoji: "🚔", forma: "circulo" },
+    salud:       { etiqueta: "Salud",                color: "#2563EB", icono: "icons/salud.svg",       emoji: "🏥", forma: "cuadrado" },
+    justicia:    { etiqueta: "Justicia",             color: "#DC2626", icono: "icons/justicia.svg",    emoji: "⚖️", forma: "triangulo" },
+    cai:         { etiqueta: "CAI y Policía",        color: "#0D9488", icono: "icons/policia.svg",     emoji: "👮", forma: "triangulo" },
+    ong:         { etiqueta: "ONG / Fundaciones",    color: "#DB2777", icono: "icons/ong.svg",         emoji: "❤️", forma: "estrella" },
+    defensoria:  { etiqueta: "Defensorías",          color: "#B45309", icono: "icons/defensoria.svg",  emoji: "🛡️", forma: "rombo" },
+    diferencial: { etiqueta: "Enfoque diferencial",  color: "#9333EA", icono: "icons/diferencial.svg", emoji: "🕊️", forma: "estrella" }
   };
-  var ICONO_POR_FORMA = {
-    circulo: "icons/comisaria.svg",
-    cuadrado: "icons/salud.svg",
-    triangulo: "icons/justicia.svg",
-    estrella: "icons/diferencial.svg",
-    rombo: "icons/defensoria.svg"
-  };
-  // Emoji amigable por categoría (se muestra en popup, lista y leyenda).
-  var EMOJI_POR_FORMA = {
-    circulo: "🚔",
-    cuadrado: "🏥",
-    triangulo: "⚖️",
-    estrella: "🕊️",
-    rombo: "🛡️"
-  };
-  var COLOR_POR_TIPO_VIOLENCIA = {
-    "Violencia intrafamiliar": COLOR_TIPO.circulo,
-    "Violencia sexual": COLOR_TIPO.cuadrado,
-    "Maltrato infantil": COLOR_TIPO.estrella,
-    "Violencia de género": COLOR_TIPO.triangulo,
-    "Víctimas del conflicto": COLOR_TIPO.estrella,
-    "Orientación legal": COLOR_TIPO.rombo
-  };
-  var FA_POR_TIPO_VIOLENCIA = {
-    "Violencia intrafamiliar": "fa-house",
-    "Violencia sexual": "fa-hand-holding-medical",
-    "Maltrato infantil": "fa-children",
-    "Violencia de género": "fa-venus",
-    "Víctimas del conflicto": "fa-hands-holding-child",
-    "Orientación legal": "fa-scale-balanced"
+  var ORDEN_CATEGORIAS = ["proteccion", "salud", "justicia", "cai", "ong", "defensoria", "diferencial"];
+  // Categoría por defecto de cada "forma" legacy (entidades antiguas o del Sheet en vivo).
+  var CATEGORIA_POR_FORMA = {
+    circulo: "proteccion",
+    cuadrado: "salud",
+    triangulo: "justicia",
+    estrella: "diferencial",
+    rombo: "defensoria"
   };
 
-  function colorDe(ins) { return ins.color || COLOR_TIPO[ins.forma] || COLOR_TIPO.circulo; }
+  // Categoría de una entidad: usa el campo `categoria` si existe; si no, la
+  // deduce del nombre (datos del Google Sheet en vivo) y, en último caso, de la forma.
+  function categoriaDe(ins) {
+    if (ins && ins.categoria && CATEGORIAS[ins.categoria]) return ins.categoria;
+    var n = ((ins && ins.nombre) || "").toLowerCase();
+    if (/comisar[íi]a|línea violeta|linea violeta|centro integrado/.test(n)) return "proteccion";
+    if (/casa de justicia|medicina legal|personer[íi]a|defensor[íi]a/.test(n)) return "defensoria";
+    if (/\bicbf\b|\bcrav\b|\bdaiv\b|v[íi]ctimas del conflicto|atenci[óo]n integral a v[íi]ctimas/.test(n)) return "diferencial";
+    if (/hospital|centro de salud|cl[íi]nica|\bsalud\b|\bips\b|samen|servim[ée]dicos|m[ée]dic/.test(n)) return "salud";
+    if (/fiscal[íi]a/.test(n)) return "justicia";
+    if (/\bcai\b|\bcaic\b|polic[íi]a|inspecci[óo]n|estaci[óo]n/.test(n)) return "cai";
+    if (/fundaci[óo]n|corporaci[óo]n/.test(n)) return "ong";
+    return CATEGORIA_POR_FORMA[(ins && ins.forma)] || "proteccion";
+  }
+
+  function categoriaInfo(ins) { return CATEGORIAS[categoriaDe(ins)] || CATEGORIAS.proteccion; }
+  // El color siempre sale de la categoría (ignora el campo legado `color` del Sheet).
+  function colorDe(ins) { return categoriaInfo(ins).color; }
   function cubreTodas(ins) {
     return ins.comunas === "todas" || (Array.isArray(ins.comunas) && ins.comunas.indexOf("todas") !== -1);
   }
@@ -70,7 +69,7 @@ const AppMapa = (function () {
       cls += " sin-dir";
       contenido = "!";
     } else {
-      contenido = '<img src="' + ICONO_POR_FORMA[ins.forma] + '" alt="">';
+      contenido = '<img src="' + categoriaInfo(ins).icono + '" alt="">';
     }
     var reloj = ins.es24h
       ? '<span class="reloj" aria-hidden="true"><img src="icons/reloj.svg" alt=""></span>'
@@ -110,7 +109,7 @@ const AppMapa = (function () {
       ? '<div class="popup-fila" style="font-size:0.76rem;color:#7A5600;">Ubicación aproximada al barrio/municipio sede (la dirección exacta geocodifica de forma parcial en OSM).</div>'
       : "";
     return (
-      '<div class="popup-titulo" style="--tc:' + colorDe(ins) + ';">' + logoPopup(ins) + "<h3><span class=\"emoji-cat\">" + (EMOJI_POR_FORMA[ins.forma] || "") + "</span> " + ins.nombre + "</h3></div>" +
+      '<div class="popup-titulo" style="--tc:' + colorDe(ins) + ';">' + logoPopup(ins) + "<h3><span class=\"emoji-cat\">" + categoriaInfo(ins).emoji + "</span> " + ins.nombre + "</h3></div>" +
       '<div class="pills">' + pills + "</div>" +
       filaPopup(ins, "Qué atiende", ins.tiposDetalle) +
       filaPopup(ins, "Dirección", ins.direccion) +
@@ -249,45 +248,46 @@ const AppMapa = (function () {
   }
 
   function construirFiltros() {
-    var contTipos = document.getElementById("filtros-tipos");
+    var contCats = document.getElementById("filtros-categorias");
 
-    function crearFilaTipo(cont, etiqueta, valor, icono, color, cuenta) {
+    function crearFila(cont, etiqueta, valor, cat) {
       var b = document.createElement("button");
       b.type = "button";
       b.className = "f-tipo";
       b.dataset.valor = valor;
       b.setAttribute("aria-pressed", "false");
       b.innerHTML =
-        '<span class="ft-ico" style="--tc:' + color + '"><i class="fa-solid ' + icono + '"></i></span>' +
+        '<span class="ft-ico" style="--tc:' + (cat ? cat.color : "#5A6B61") + '">' +
+        (cat ? '<img src="' + cat.icono + '" alt="">' : '<i class="fa-solid fa-list-check"></i>') +
+        "</span>" +
         '<span class="ft-label">' + etiqueta + "</span>" +
-        '<span class="ft-count">' + cuenta + "</span>";
+        '<span class="ft-count">0</span>';
       cont.appendChild(b);
       return b;
     }
 
-    crearFilaTipo(contTipos, "Todas", "*todas", "fa-list-check", "#5A6B61", 0)
-      .setAttribute("aria-pressed", "true");
-    TIPOS_VIOLENCIA.forEach(function (t) {
-      crearFilaTipo(contTipos, t, t, FA_POR_TIPO_VIOLENCIA[t], COLOR_POR_TIPO_VIOLENCIA[t], 0);
+    crearFila(contCats, "Todas", "*todas", null).setAttribute("aria-pressed", "true");
+    ORDEN_CATEGORIAS.forEach(function (k) {
+      crearFila(contCats, CATEGORIAS[k].etiqueta, k, CATEGORIAS[k]);
     });
 
-    contTipos.addEventListener("click", function (e) {
+    contCats.addEventListener("click", function (e) {
       var b = e.target.closest("button[data-valor]");
       if (!b) return;
       var valor = b.dataset.valor;
       var activo = b.getAttribute("aria-pressed") === "true";
-      var botones = contTipos.querySelectorAll("button[data-valor]");
+      var botones = contCats.querySelectorAll("button[data-valor]");
       if (valor === "*todas") {
-        tipoSel.clear();
+        catSel.clear();
         botones.forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
         b.setAttribute("aria-pressed", "true");
       } else {
-        contTipos.children[0].setAttribute("aria-pressed", "false");
+        contCats.children[0].setAttribute("aria-pressed", "false");
         if (activo) {
-          tipoSel.delete(valor);
+          catSel.delete(valor);
           b.setAttribute("aria-pressed", "false");
         } else {
-          tipoSel.add(valor);
+          catSel.add(valor);
           b.setAttribute("aria-pressed", "true");
         }
       }
@@ -301,20 +301,17 @@ const AppMapa = (function () {
     });
 
     document.getElementById("chip-limpiar").addEventListener("click", function () {
-      tipoSel.clear();
+      catSel.clear();
       solo24 = false;
       document.getElementById("chip-24h").setAttribute("aria-pressed", "false");
-      contTipos.querySelectorAll(".f-tipo").forEach(function (x, i) { x.setAttribute("aria-pressed", i === 0 ? "true" : "false"); });
+      contCats.querySelectorAll(".f-tipo").forEach(function (x, i) { x.setAttribute("aria-pressed", i === 0 ? "true" : "false"); });
       aplicarFiltros();
     });
   }
 
-  function pasaTipo(ins) {
-    if (tipoSel.size === 0 || tipoSel.has("*todas")) return true;
-    for (var i = 0; i < (ins.tipos || []).length; i++) {
-      if (tipoSel.has(ins.tipos[i])) return true;
-    }
-    return false;
+  function pasaCategoria(ins) {
+    if (catSel.size === 0 || catSel.has("*todas")) return true;
+    return catSel.has(categoriaDe(ins));
   }
   function pasa24(ins) {
     return !solo24 || ins.es24h;
@@ -324,7 +321,7 @@ const AppMapa = (function () {
     if (!capaMarcadores) return;
     capaMarcadores.clearLayers();
     DATOS.forEach(function (ins) {
-      if (!(pasaTipo(ins) && pasa24(ins))) return;
+      if (!(pasaCategoria(ins) && pasa24(ins))) return;
       var m = marcadores[ins.id];
       if (m) capaMarcadores.addLayer(m);
     });
@@ -333,13 +330,13 @@ const AppMapa = (function () {
   function actualizarStats() {
     document.getElementById("stat-total").textContent = DATOS.length;
     document.getElementById("stat-24h").textContent = DATOS.filter(function (i) { return i.es24h; }).length;
-    // contadores por tipo en los filtros
-    var contTipos = document.getElementById("filtros-tipos");
-    Array.prototype.forEach.call(contTipos.querySelectorAll(".f-tipo"), function (b) {
+    // contadores por categoría en los filtros
+    var contCats = document.getElementById("filtros-categorias");
+    Array.prototype.forEach.call(contCats.querySelectorAll(".f-tipo"), function (b) {
       var valor = b.dataset.valor;
       var cuenta = valor === "*todas"
         ? DATOS.length
-        : DATOS.filter(function (i) { return (i.tipos || []).indexOf(valor) !== -1; }).length;
+        : DATOS.filter(function (i) { return categoriaDe(i) === valor; }).length;
       var span = b.querySelector(".ft-count");
       if (span) span.textContent = cuenta;
     });
@@ -354,6 +351,21 @@ const AppMapa = (function () {
       d.innerHTML = "<strong>" + l.linea + "</strong><span>" + l.servicio + " · " + l.horario + " · " + l.costo + "</span>";
       lineas.appendChild(d);
     });
+    pintarLeyenda();
+  }
+
+  // Leyenda: una fila por categoría (desde CATEGORIAS) + avisos fijos de 24 h y dirección.
+  function pintarLeyenda() {
+    var cont = document.getElementById("leyenda-iconos");
+    if (!cont) return;
+    var filas = ORDEN_CATEGORIAS.map(function (k) {
+      var c = CATEGORIAS[k];
+      return "<div><span class=\"lg-ico\" style=\"--tc:" + c.color + "\"><img src=\"" + c.icono + "\" alt=\"\"></span> " +
+        c.emoji + " " + c.etiqueta + "</div>";
+    });
+    filas.push('<div><span class="lg-ico h24" style="--tc:#F97316"><img src="icons/reloj.svg" alt=""></span> ⏰ Borde ámbar = 24 horas</div>');
+    filas.push('<div><span class="lg-ico alerta">!</span> ❓ Dirección por verificar</div>');
+    cont.innerHTML = filas.join("");
   }
 
   function iniciar() {
@@ -437,9 +449,9 @@ const AppMapa = (function () {
     comunaDeCoordenada: comunaDeCoordenada,
     getMapa: function () { return mapa; },
     getDatos: function () { return DATOS; },
-    getIconoPorForma: function () { return ICONO_POR_FORMA; },
-    getColorPorForma: function () { return COLOR_TIPO; },
-    getEmojiPorForma: function () { return EMOJI_POR_FORMA; },
+    getCategorias: function () { return CATEGORIAS; },
+    getOrdenCategorias: function () { return ORDEN_CATEGORIAS; },
+    categoriaDe: categoriaDe,
     textoComunas: textoComunas
   };
 })();
