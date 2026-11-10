@@ -1,9 +1,12 @@
-// Servidor estático mínimo para pruebas locales (node tools/serve.js [puerto])
+// Servidor estático mínimo para pruebas locales
+//   node tools/serve.js [puerto] [carpeta]
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.join(__dirname, "..", "renderer");
+const ROOT = process.argv[3]
+  ? path.resolve(process.argv[3])
+  : path.join(__dirname, "..", "renderer");
 const PUERTO = Number(process.argv[2]) || 8391;
 const MIME = {
   ".html": "text/html; charset=utf-8",

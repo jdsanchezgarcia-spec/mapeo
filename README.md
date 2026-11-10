@@ -20,9 +20,13 @@ mapeo/
 │   ├── js/app.js                         # mapa, filtros, listado, leyenda
 │   ├── js/exportar.js                    # exporta todas las entidades a un .xlsx
 │   ├── js/admin.js                       # login admin, formulario de puntos, clic-en-mapa
-│   ├── comunas.js / datos.js             # geojson de comunas + datos de respaldo
+│   ├── comunas.js / datos.js             # geojson de comunas + datos del modo demo
 │   ├── vendor/leaflet/                   # Leaflet local (offline)
 │   └── icons/ / logos/                   # íconos de categoría y logos institucionales
+├── tools/                                # scripts de apoyo (Node)
+│   ├── importar-mapeo.js                 # importa el XLSX institucional a datos.js
+│   ├── test-xlsx.js                      # genera un .xlsx de prueba
+│   └── serve.js / stop-serve.ps1         # servidor estático para pruebas
 └── README.md
 ```
 
@@ -35,7 +39,8 @@ npm install
 npm start
 ```
 
-La app abre el mapa con las 15 instituciones de ejemplo (modo demo, sin backend).
+La app abre el mapa con las 51 instituciones de `renderer/datos.js`
+(modo demo, sin backend).
 El botón **Admin** muestra un aviso de que falta configurar el backend.
 
 ## 2. Desplegar el backend (Google Apps Script + Sheets)
@@ -106,6 +111,40 @@ diálogo **Guardar archivo** para elegir la carpeta.
 
 Para regenerar una prueba del archivo fuera de la app: `node tools/test-xlsx.js`
 (escribe un `.xlsx` en la carpeta temporal y lo puede abrir con Excel).
+
+## 5. Importar el mapeo institucional (modo demo)
+
+`tools/importar-mapeo.js` agrega a `renderer/datos.js` las instituciones de un
+archivos TSV exportado del XLSX institucional (Comuna, Tipo, Institución,
+Dirección, Teléfono, Email, Servicios):
+
+```bash
+node tools/importar-mapeo.js [ruta.tsv] [--dry]   # --dry: no escribe nada
+```
+
+Cómo mapea cada fila:
+
+- **Destino**: solo `renderer/datos.js` (modo demo). **No toca el Google Sheet
+  ni el backend**: el mapa en vivo sigue leyendo del Sheet.
+- **Omite** las instituciones que ya existen (se comparan los nombres), así que
+  se puede ejecutar varias veces sin duplicar nada.
+- **Coordenadas**: geocodifica la dirección con Nominatim/OpenStreetMap y
+  descarta el resultado si cae fuera del perímetro urbano o en una comuna
+  distinta de la que declara la fila. Si no hay dirección o no hay resultado
+  válido, usa el centroide de la comuna (con una separación mínima para que no
+  se apilen) o el centro de la ciudad cuando la cobertura es «todas».
+- **Categoría (`forma`)**: Comisaría → círculo; Policía/CAI/Inspección →
+  triángulo; Salud → cuadrado; Organización Social/Centro Integrado → estrella.
+- **Tipos de violencia**: por palabras clave en Institución + Servicios, con
+  respaldo según la columna Tipo.
+- **24 horas**: detecta «24 horas», «24/7» o «24 h» en el nombre, servicios o teléfono.
+- **`tiposDetalle`** = Servicios; **`telefono`** = Teléfono + correo;
+  la columna Responsable se descarta.
+- **`verificado`**: «por verificar» si no hay dirección, «parcialmente
+  verificado» si la hubo (la geocodificación es aproximada: todas las filas
+  nuevas quedan con `ubicacionAprox: true`).
+- Los resultados de Nominatim se guardan en `tools/geocache.json` para no
+  repetir consultas (Nominatim permite máximo 1 consulta por segundo).
 
 ## Seguridad (qué sí y qué no)
 
